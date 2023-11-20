@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>USER</title>
+    <style>
+        th:first-child td {
+            background-color: #f2f2f2; 
+            text-align: center;
+        } 
+    </style>
+</head>
+<body>
+    <div>
+        <p>{{ pageTitle }}</p>
+    </div>
+    <table>
+    <thead>
+        <th>
+            <td>ID</td>
+            <td>Name</td>
+            <td>Birthdate</td>
+            <td>Gender</td>
+            <td>Address</td>
+        </th>
+    </thead>
+    <tbody>
+        {% for user in data %}
+            <tr>
+                <td>{{ user.ID }}</td>             
+                <td>{{ user.Name }}</td>
+                <td>{{ user.Birthdate }}</td>
+                <td>{{ user.Gender }}</td>
+                <td>{{ user.Address }}</td>
+            </tr>
+        {% endfor %}     
+    </tbody>       
+    </table>
+</body>
+</html>
