@@ -49,19 +49,18 @@ db.run(
         }
         console.log('수정 성공');
     });
-}
-
-db.run('DELETE FROM users WHERE id=?', [delUser.id], (err) => {
-    //데이터 삭제 (DELETE) => DELETE
     const delUser = {
         id: 7
     }
-    if (err) {
-        console.error('삭제 실패');
-        return;
-    }
-    console.log('삭제 성공');
+    db.run('DELETE FROM users WHERE id=?', [delUser.id], (err) => {
+        //데이터 삭제 (DELETE) => DELETE
+        if (err) {
+            console.error('삭제 실패');
+            return;
+        }
+        console.log('삭제 성공');
+    })
 })
-)
+
 //데이터베이스 연결 종류
 db.close();
