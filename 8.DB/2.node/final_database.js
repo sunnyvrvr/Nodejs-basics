@@ -20,15 +20,14 @@ function createTable() {
 }
 
 //데이터 삽입 (CREATE) => INSERT
-function insertUser() {
+function insertUser(newUser) {
     return new Promise ((resolve, reject) => {
-        const newUser = { username: 'sunjinjung', email: 'sunjin@mail.com' }
-        
+
         db.run('INSERT INTO users (username, email) VALUES (?,?)',
             [newUser.username, newUser.email], function(err) {
                 if (err) {
-                    console.log('데이터 삽입 실패', err);
-                    reject(err);
+                    console.log('데이터 삽입 실패');
+                    reject();
                 } else {
                     console.log('데이터 삽입 성공', this.lastID);
                     resolve();
@@ -38,7 +37,7 @@ function insertUser() {
     })
 }
 //데이터 조회 (READ) => SELECT
-function selectUser() {
+function readUser() {
     return new Promise((resolve, reject) => {
         db.each('SELECT * FROM users', (err, row) => {
             if (err) {
@@ -55,11 +54,6 @@ function selectUser() {
 //데이터 수정 (UPDATE) => UPDATE
 function updateUser() {
     return new Promise((resolve, reject) => { 
-        const updateUser = {
-            id: 3,
-            username: 'sunjinjung',
-            email: 'sunjin@mail.com'
-        }
 
         db.run('UPDATE users SET username=?, email=? WHERE id=?',
             [updateUser.username, updateUser.email, updateUser.id],
@@ -77,11 +71,9 @@ function updateUser() {
 }
 
 //데이터 삭제 (DELETE) => DELETE
-function deleteUser() {
+function deleteUser(delUser) {
     return new Promise((resolve, reject) => {    
-        const delUser = {
-            id: 5
-        }   
+ 
         db.run('DELETE FROM users WHERE id=?', [delUser.id],
         (err) => {
             if (err) {
@@ -96,24 +88,11 @@ function deleteUser() {
 }
 
 const db = new sqlite3.Database('mydb4.db');
-function main(){
-    createTable();
-    insertUser();
-    updateUser();
-    selectUser();
-    deleteUser();
-    //데이터베이스 연결 종류
-    db.close();
-}  
-
-//순서를 내가 만들기
-// function main() {
-//     createTable()
-//         .then(() => insertUser())
-//         .then(() => updateUser())
-//         .then(() => selectUser())
-//         .then(() => deleteUser())
-//         .catch(error => console.error(error))
-//         .finally(() => db.close());
-// }
-main();
+module.exports =  {
+    createTable,
+    insertUser,
+    updateUser,
+    readUser,
+    deleteUser,
+    close: () => db.close();
+};
