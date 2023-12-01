@@ -22,18 +22,24 @@ function createTable() {
 
 //DB 초기화 함수
 function init_database() {
-    // DB 초기화 코드 작성
-    // CREATE TABLE 
-    const sql = fs.readFileSync('init_database.sql', 'utf-8');
-    console.log(sql);
+    return new Promise((resolve, reject) => {
+        // DB 초기화 코드 작성
+        // CREATE TABLE 
+        const sql = fs.readFileSync('init_database.sql', 'utf8');
+        //console.log(sql);       
+        db.exec(sql, (err) => {
+            if (err) {
 
-    db.exec(sql, (err) => {
-        if (err) {
-            //초기화 되어있으면 초기화 찍지 않기
-            console.log('초기화 실패', err) //지워주면 다른 오류가 나오면 안나옴
-        } else {
-            console.log('초기화 성공');
-        }
+                if (err.code == 'SQLITE_CONSTRAINT') {
+                    console.log('초기화 이미 되어있음. 초기화 Skip');
+                } else {
+                console.error('초기화 실패', err); //초기화 되어있으면 초기화 찍지 않기
+                }
+            } else {
+                console.error('초기화 성공'); 
+
+            }
+        })
     })
 }
 //서버 URL 
@@ -57,8 +63,16 @@ app.get('/:table/:id', (req, res) => {
     })
 })
 
-init_database();
 //Express 서버 시작
-app.listen(port, () => {
-    console.log(`서버 레디 ${port}`)
-});
+async function startServer() {
+    try {
+        await init_database();
+
+        app.listen(port, () => {
+            console.log(`서버 레디 ${port}`)
+    });
+    } catch (error) {
+        console.error(error);
+    } 
+}
+startServer();
